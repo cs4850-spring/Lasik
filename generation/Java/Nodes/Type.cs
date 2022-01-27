@@ -4,7 +4,7 @@ namespace generation.Java.Nodes
 {
     public class Type : Node
     {
-        public List<object> ExtendedTypes { get; set; }
+        public List<Type> ExtendedTypes { get; set; }
         public List<object> ImplementedTypes { get; set; }
         public string IsInterface { get; set; }
         public List<object> TypeParameters { get; set; }

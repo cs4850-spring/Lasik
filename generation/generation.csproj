@@ -7,13 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Java\Visitors\Transformers"/>
-        <Folder Include="TokenGenerators"/>
+        <Folder Include="Java\Visitors\Transformers" />
+        <Folder Include="TokenGenerators" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.1.0-1.final"/>
-        <PackageReference Include="System.Runtime.Loader" Version="4.3.0"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.1.0-1.final" />
+        <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
     </ItemGroup>
 
 </Project>
