@@ -9,7 +9,7 @@ namespace generation.Java.Nodes
      */
     public abstract class Node
     {
-        [JsonPropertyName("!")] public string Kind { get; set; }
+        [JsonPropertyName("!")] public string Class { get; set; }
         public TextRange Range { get; set; }
         public TokenRange TokenRange { get; set; }
 

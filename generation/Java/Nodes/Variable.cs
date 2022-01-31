@@ -1,8 +1,13 @@
-﻿namespace generation.Java.Nodes
+﻿using System.Text.Json.Serialization;
+
+namespace generation.Java.Nodes
 {
     public class Variable : Node
     {
-        public Name Name { get; set; }
-        public Type Type { get; set; }
+        [JsonPropertyName("initializer")] public Initializer Initializer { get; set; }
+
+        [JsonPropertyName("name")] public Name Name { get; set; }
+
+        [JsonPropertyName("type")] public Type Type { get; set; }
     }
 }
