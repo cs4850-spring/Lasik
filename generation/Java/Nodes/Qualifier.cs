@@ -2,10 +2,8 @@
 
 namespace generation.Java.Nodes
 {
-    public class Name : Node
+    public class Qualifier : Node
     {
         [JsonPropertyName("identifier")] public string Identifier { get; set; }
-
-        [JsonPropertyName("qualifier")] public Qualifier Qualifier { get; set; }
     }
 }

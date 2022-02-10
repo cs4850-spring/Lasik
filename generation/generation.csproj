@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Folder Include="Java\Visitors\Roslyn"/>
         <Folder Include="Java\Visitors\Transformers" />
         <Folder Include="TokenGenerators" />
     </ItemGroup>
