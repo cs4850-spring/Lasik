@@ -1,9 +1,36 @@
-﻿namespace generation
+﻿using System;
+using Generation.generators;
+using Generation.Java.Nodes;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Editing;
+
+namespace Generation
 {
     public class Generator
     {
+        private readonly SyntaxGenerator _syntaxGenerator;
+
+        public Generator()
+        {
+            _syntaxGenerator = SyntaxGenerator.GetGenerator(new AdhocWorkspace(), LanguageNames.CSharp);
+        }
         
-        // Walk down ast
-        // Each node, find out what type of node it is -> create visitor for it
+        public string Generate(CompilationUnit javaAst)
+        {
+            
+            // Java AST -> C# (Rosyln) AST
+            // CompilationUnit -> CompilationUnitSyntax
+            CleanupAST(javaAst);
+            var cSharpAst = new CompilationUnitSyntaxNodeGenerator().Generate(_syntaxGenerator, javaAst);
+
+            return cSharpAst.NormalizeWhitespace().ToFullString();
+        }
+
+        private void CleanupAST(CompilationUnit javaAst)
+        {
+            
+        }
     }
 }

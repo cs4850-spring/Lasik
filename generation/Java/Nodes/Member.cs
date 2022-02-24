@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using Generation.Java.Converters;
 
-namespace generation.Java.Nodes
+namespace Generation.Java.Nodes
 {
-    public class Member : Node
+    [JsonConverter(typeof(MemberConverter))]
+    public abstract class Member : Node
     {
-        public List<object> modifiers { get; set; }
-        public List<Variable> variables { get; set; }
-        public List<object> annotations { get; set; }
+        [JsonPropertyName("modifiers")] public List<Modifier> Modifiers { get; set; }
+
+        [JsonPropertyName("annotations")] public List<object> Annotations { get; set; }
     }
 }

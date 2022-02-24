@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace generation.Java.Nodes
+namespace Generation.Java.Nodes
 {
     /**
      * A Node represents a specific meta-object (Type, Member, Variable, etc) on the java AST.
@@ -12,10 +12,5 @@ namespace generation.Java.Nodes
         [JsonPropertyName("!")] public string Kind { get; set; }
         public TextRange Range { get; set; }
         public TokenRange TokenRange { get; set; }
-
-        public virtual IEnumerable<Node> Children()
-        {
-            return new List<Node>();
-        }
     }
 }

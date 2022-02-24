@@ -1,4 +1,4 @@
-﻿namespace generation.Java
+﻿namespace Generation.Java
 {
     public class Token
     {
