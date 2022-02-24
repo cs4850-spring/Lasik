@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Generation.Java.Nodes
+namespace Generation.Java.Nodes.Members
 {
     public class MemberVariable : Member
     {

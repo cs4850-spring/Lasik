@@ -1,8 +1,8 @@
-﻿using Generation.Java.Nodes;
+﻿using Generation.Java.Nodes.Members;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
 
-namespace Generation.generators
+namespace Generation.Generators
 {
     public class MemberVariableSyntaxNodeGenerator : ISyntaxNodeGenerator<MemberVariable>
     {

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Generation.Java.Nodes.Types;
 
 namespace Generation.Java.Nodes
 {
@@ -8,6 +9,6 @@ namespace Generation.Java.Nodes
 
         [JsonPropertyName("name")] public SimpleName SimpleName { get; set; }
 
-        [JsonPropertyName("type")] public ClassOrInterface Type { get; set; }
+        [JsonPropertyName("type")] public JavaType JavaType { get; set; }
     }
 }

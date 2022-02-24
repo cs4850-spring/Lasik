@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using Generation.Java.Converters;
 
-namespace Generation.Java.Nodes
+namespace Generation.Java.Nodes.Members
 {
     [JsonConverter(typeof(MemberConverter))]
     public abstract class Member : Node

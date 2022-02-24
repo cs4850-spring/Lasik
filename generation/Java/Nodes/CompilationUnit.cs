@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Generation.Java.Nodes.Types;
 
 namespace Generation.Java.Nodes
 {
@@ -7,6 +8,6 @@ namespace Generation.Java.Nodes
     {
         [JsonPropertyName("imports")] public List<Import> Imports { get; set; }
 
-        [JsonPropertyName("types")] public List<ClassOrInterface> Types { get; set; }
+        [JsonPropertyName("types")] public List<ClassOrInterfaceJavaType> Types { get; set; }
     }
 }

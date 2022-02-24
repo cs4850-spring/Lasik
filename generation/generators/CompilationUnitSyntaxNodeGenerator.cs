@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Generation.Java.Nodes;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
 
-namespace Generation.generators
+namespace Generation.Generators
 {
     public class CompilationUnitSyntaxNodeGenerator : ISyntaxNodeGenerator<CompilationUnit>
     {
@@ -22,6 +20,4 @@ namespace Generation.generators
             return syntaxGenerator.CompilationUnit(declarations);
         }
     }
-
-    
 }

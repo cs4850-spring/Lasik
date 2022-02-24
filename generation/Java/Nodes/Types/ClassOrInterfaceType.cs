@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Generation.Java.Converters;
+using Generation.Java.Nodes.Members;
 
-namespace Generation.Java.Nodes
+namespace Generation.Java.Nodes.Types
 {
-    // NOTE(MICHAEL): I Really hate this name, but its what the kind is in java and I cant think of a better one right noe
-    public class ClassOrInterface : Node
+    public class ClassOrInterfaceJavaType : JavaType
     {
         [JsonPropertyName("extendedTypes")] public List<object> ExtendedTypes { get; set; }
 
@@ -24,5 +24,10 @@ namespace Generation.Java.Nodes
         [JsonPropertyName("name")] public SimpleName SimpleName { get; set; }
 
         [JsonPropertyName("annotations")] public List<object> Annotations { get; set; }
+        
+        public override string Identifier()
+        {
+            return SimpleName.Identifier;
+        }
     }
 }
