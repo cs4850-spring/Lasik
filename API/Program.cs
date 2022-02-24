@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-app.MapGet("/generate", ([FromBody] string javaCode) => {
+app.MapPost("/generate", ([FromBody] string javaCode) => {
 
     string _url = "https://lasik.michaelepps.me:8080/parse ";
     // create http client

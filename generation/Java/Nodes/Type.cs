@@ -23,5 +23,11 @@ namespace generation.Java.Nodes
         [JsonPropertyName("name")] public Name Name { get; set; }
 
         [JsonPropertyName("annotations")] public List<object> Annotations { get; set; }
+        
+        [JsonProperty("componentType")]
+        public ComponentType ComponentType { get; set; }
+
+        [JsonProperty("origin")]
+        public string Origin { get; set; }
     }
 }
