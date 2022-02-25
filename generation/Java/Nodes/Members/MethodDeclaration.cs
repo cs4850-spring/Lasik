@@ -4,7 +4,7 @@ using Generation.Java.Nodes.Types;
 
 namespace Generation.Java.Nodes.Members
 {
-    public class MemberMethod : Member
+    public class MethodDeclaration : Member
     {
         [JsonPropertyName("body")] public Body Body { get; set; }
 

@@ -1,9 +1,10 @@
 ﻿using System.Linq;
+using Generation.Generators.Types;
 using Generation.Java.Nodes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
 
-namespace Generation.Generators
+namespace Generation.Generators.Body
 {
     public class CompilationUnitSyntaxNodeGenerator : ISyntaxNodeGenerator<CompilationUnit>
     {

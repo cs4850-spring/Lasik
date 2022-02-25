@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
 
-namespace Generation.Generators
+namespace Generation.Generators.Body
 {
     public class ImportSyntaxNodeGenerator : ISyntaxNodeGenerator<Import>
     {

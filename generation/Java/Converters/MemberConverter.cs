@@ -18,9 +18,9 @@ namespace Generation.Java.Converters
             Member? member = kind switch
             {
                 "com.github.javaparser.ast.body.FieldDeclaration" =>
-                    JsonSerializer.Deserialize<MemberVariable>(ref reader, options),
+                    JsonSerializer.Deserialize<FieldDeclaration>(ref reader, options),
                 "com.github.javaparser.ast.body.MethodDeclaration" =>
-                    JsonSerializer.Deserialize<MemberMethod>(ref reader, options),
+                    JsonSerializer.Deserialize<MethodDeclaration>(ref reader, options),
                 _ => throw new NotImplementedException()
             };
 
