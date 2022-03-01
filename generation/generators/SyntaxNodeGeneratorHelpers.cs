@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Generation.Java.Nodes;
 using Microsoft.CodeAnalysis;
@@ -30,8 +31,13 @@ namespace Generation.Generators
 
             return modifiers.Select(modifier =>
             {
-                // TODO (MICHAEL): We need to decide what modifiers we will support.
-                return DeclarationModifiers.None;
+                return modifier.Keyword switch
+                {
+                    "STATIC" => DeclarationModifiers.Static,
+                    "FINAL" => DeclarationModifiers.ReadOnly,
+                    "CONST" => DeclarationModifiers.Const,
+                    _ => DeclarationModifiers.None
+                };
             }).FirstOrDefault(modifier => modifier != DeclarationModifiers.None, DeclarationModifiers.None);
         }
     }

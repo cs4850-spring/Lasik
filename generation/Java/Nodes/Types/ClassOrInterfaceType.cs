@@ -7,9 +7,9 @@ namespace Generation.Java.Nodes.Types
 {
     public class ClassOrInterfaceJavaType : JavaType
     {
-        [JsonPropertyName("extendedTypes")] public List<object> ExtendedTypes { get; set; }
+        [JsonPropertyName("extendedTypes")] public List<JavaType> ExtendedTypes { get; set; }
 
-        [JsonPropertyName("implementedTypes")] public List<object> ImplementedTypes { get; set; }
+        [JsonPropertyName("implementedTypes")] public List<JavaType> ImplementedTypes { get; set; }
 
         [JsonPropertyName("isInterface")]
         [JsonConverter(typeof(BoolConverter))]

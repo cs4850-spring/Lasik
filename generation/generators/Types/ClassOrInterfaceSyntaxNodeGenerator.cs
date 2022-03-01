@@ -14,11 +14,11 @@ namespace Generation.Generators.Types
             var accessibility = SyntaxNodeGeneratorHelpers.AccessibilityFromModifiers(node.Modifiers);
             var declarationModifiers = SyntaxNodeGeneratorHelpers.DeclarationModifiersFromModifier(node.Modifiers);
             var members =
-                node?.Members.Select(member => new MemberSyntaxNodeGenerator().Generate(syntaxGenerator, member));
+                node?.Members?.Select(member => new MemberSyntaxNodeGenerator().Generate(syntaxGenerator, member));
             
             // Check if the node is a declaration. If So, we just want to return a TypeSyntax.
             // For instance: In `public Bar foo()` `Bar` is a not a declaration
-            if (!IsDeclaration(node))
+            if (IsDeclaration(node))
             {
                 return SyntaxFactory.ParseTypeName(node.SimpleName.Identifier);
             }
