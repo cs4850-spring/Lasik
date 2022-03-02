@@ -24,6 +24,12 @@ namespace Generation.Generators.Expr
                     new AssignmentExpressionSyntaxNodeGenerator().Generate(syntaxGenerator, assignExpression),
                 NameExpression nameExpression => 
                     new NameExpressionSyntaxNodeGenerator().Generate(syntaxGenerator, nameExpression),
+                MethodCallExpression methodCallExpression => 
+                    new MethodCallExpressionSyntaxNodeGenerator().Generate(syntaxGenerator, methodCallExpression),
+                FieldAccessExpression fieldAccessExpression =>
+                    new FieldAccessExpressionSyntaxNodeGenerator().Generate(syntaxGenerator, fieldAccessExpression),
+                ThisExpression thisExpression => 
+                    new ThisExpressionSyntaxNodeGenerator().Generate(syntaxGenerator,  thisExpression),
                 _ => throw new ArgumentOutOfRangeException(nameof(node), node, null)
             };
         }

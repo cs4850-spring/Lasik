@@ -43,6 +43,12 @@ namespace Generation.Java.Converters
                     JsonSerializer.Deserialize<NameExpression>(ref reader, options),
                 "com.github.javaparser.ast.expr.VariableDeclarationExpr" =>
                     JsonSerializer.Deserialize<VariableDeclarationExpression>(ref reader, options),
+                "com.github.javaparser.ast.expr.MethodCallExpr" =>
+                    JsonSerializer.Deserialize<MethodCallExpression>(ref reader, options),
+                "com.github.javaparser.ast.expr.FieldAccessExpr" =>
+                    JsonSerializer.Deserialize<FieldAccessExpression>(ref reader, options),
+                "com.github.javaparser.ast.expr.ThisExpr" => 
+                    JsonSerializer.Deserialize<ThisExpression>(ref reader, options),
                 _ => throw new ArgumentOutOfRangeException()
             };
             if (expression == null) return null;
