@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Generation.Java.Nodes;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
 
 namespace Generation.Generators
@@ -40,5 +41,6 @@ namespace Generation.Generators
                 };
             }).FirstOrDefault(modifier => modifier != DeclarationModifiers.None, DeclarationModifiers.None);
         }
+        
     }
 }

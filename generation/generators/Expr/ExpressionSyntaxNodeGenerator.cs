@@ -22,6 +22,8 @@ namespace Generation.Generators.Expr
                     new VariableDeclarationExpressionSyntaxNodeGenerator().Generate(syntaxGenerator, variableDeclarationExpression),
                 AssignExpression assignExpression =>
                     new AssignmentExpressionSyntaxNodeGenerator().Generate(syntaxGenerator, assignExpression),
+                NameExpression nameExpression => 
+                    new NameExpressionSyntaxNodeGenerator().Generate(syntaxGenerator, nameExpression),
                 _ => throw new ArgumentOutOfRangeException(nameof(node), node, null)
             };
         }

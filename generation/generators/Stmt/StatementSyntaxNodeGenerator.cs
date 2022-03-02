@@ -1,4 +1,5 @@
 ﻿using System;
+using Generation.Java.Nodes.Expressions;
 using Generation.Java.Nodes.Statements;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
@@ -15,6 +16,10 @@ namespace Generation.Generators.Stmt
                     new ExpressionStatementSyntaxNodeGenerator().Generate(syntaxGenerator, expressionStatement), 
                 BlockStatement blockStatement =>
                     new BlockStatementSyntaxNodeGenerator().Generate(syntaxGenerator, blockStatement),
+                IfStatement ifStatement =>
+                    new IfStatementSyntaxNodeGenerator().Generate(syntaxGenerator, ifStatement),
+                ForStatement forStatement => 
+                    new ForStatementSyntaxNodeGenerator().Generate(syntaxGenerator, forStatement),
                 _ => throw new ArgumentOutOfRangeException(nameof(node), node, null)
             };        
         }

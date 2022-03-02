@@ -25,6 +25,7 @@ namespace Generation.Generators.Expr
                 "XOR" => (SyntaxKind.ExclusiveOrAssignmentExpression, SyntaxKind.CaretEqualsToken),
                 "BINARY_OR" => (SyntaxKind.OrAssignmentExpression, SyntaxKind.BarEqualsToken),
                 "BINARY_AND" => (SyntaxKind.AndAssignmentExpression, SyntaxKind.AmpersandEqualsToken),
+                "ASSIGN" => (SyntaxKind.SimpleAssignmentExpression, SyntaxKind.EqualsToken),
                 _ => throw new ArgumentOutOfRangeException(),
             };
 

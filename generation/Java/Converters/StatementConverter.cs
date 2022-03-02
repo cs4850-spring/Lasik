@@ -21,6 +21,10 @@ namespace Generation.Java.Converters
                     JsonSerializer.Deserialize<ExpressionStatement>(ref reader, options),
                 "com.github.javaparser.ast.stmt.BlockStmt" =>
                     JsonSerializer.Deserialize<BlockStatement>(ref reader, options),
+                "com.github.javaparser.ast.stmt.IfStmt" =>
+                    JsonSerializer.Deserialize<IfStatement>(ref reader, options),
+                "com.github.javaparser.ast.stmt.ForStmt" =>
+                    JsonSerializer.Deserialize<ForStatement>(ref reader, options),
                 _ => throw new NotImplementedException()
             };
 

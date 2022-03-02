@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Generation.Generators.Stmt;
 using Generation.Generators.Types;
 using Generation.Java.Nodes;
 using Generation.Java.Nodes.Members;
+using Generation.Java.Nodes.Statements;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
 
 namespace Generation.Generators.Body
@@ -20,9 +23,9 @@ namespace Generation.Generators.Body
             var accessibility = SyntaxNodeGeneratorHelpers.AccessibilityFromModifiers(node.Modifiers);
             var declarationModifiers = SyntaxNodeGeneratorHelpers.DeclarationModifiersFromModifier(node.Modifiers);
 
-            // TODO(MICHAEL): Implement statements
+            var block = new BlockStatementSyntaxNodeGenerator().Generate(syntaxGenerator, node.Body) as BlockSyntax;
             return syntaxGenerator.MethodDeclaration(node.SimpleName.Identifier, parameters, null, returnType, accessibility,
-                declarationModifiers, null);
+                declarationModifiers, block?.Statements);
         }
     }
 }
