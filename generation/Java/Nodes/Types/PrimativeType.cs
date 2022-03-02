@@ -9,7 +9,11 @@ namespace Generation.Java.Nodes.Types
         public override string Identifier()
         {
             // Primitives are always uppercase (INT, FLOAT, STRING, etc)
-            return Type.ToLower();
+            return Type switch
+            {
+                "BOOLEAN" => "bool",
+                _ => Type.ToLower()
+            };
         }
     }
 }

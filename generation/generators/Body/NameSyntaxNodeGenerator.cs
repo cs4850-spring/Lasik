@@ -11,8 +11,7 @@ namespace Generation.Generators.Body
             var identifier = syntaxGenerator.IdentifierName(node.Identifier);
             if (node.Qualifier == null) return identifier;
             
-            var qualifier = new QualifierSyntaxNodeGenerator().Generate(syntaxGenerator, node.Qualifier);
-            return syntaxGenerator.QualifiedName(qualifier, identifier);
+            return syntaxGenerator.IdentifierName($"{node.Qualifier.Identifier}.{node.Identifier}");
         }
     }
 }
