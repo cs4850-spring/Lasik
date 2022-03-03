@@ -23,6 +23,8 @@ namespace Lasik.Controllers
         }
 
         [HttpPost]
+        [Consumes("text/plain")]
+        [Produces("text/plain")]
         public async Task<string> Generate([FromBody] string javaCode, CancellationToken cancellationToken = default)
         {
             try
