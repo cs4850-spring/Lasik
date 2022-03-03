@@ -65,4 +65,5 @@ jobs:
           script: |
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
             docker-compose down
+            docker-compose pull
             docker-compose -f ~/docker-compose.yml up -d --force-recreate

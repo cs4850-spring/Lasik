@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Generation;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -25,6 +26,7 @@ namespace Lasik.Controllers
         [HttpPost]
         [Consumes("text/plain")]
         [Produces("text/plain")]
+        [DisableCors]
         public async Task<string> Generate([FromBody] string javaCode, CancellationToken cancellationToken = default)
         {
             try
