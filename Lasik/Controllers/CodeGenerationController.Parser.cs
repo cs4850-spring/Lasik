@@ -32,8 +32,7 @@ namespace Lasik.Controllers
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync(cancellationToken);
-                Console.Write(content);
-                return null;
+                throw new Exception(content);
             }
             return await response.Content.ReadFromJsonAsync<CompilationUnit>(cancellationToken: cancellationToken);
         }

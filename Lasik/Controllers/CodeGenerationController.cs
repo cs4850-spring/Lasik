@@ -25,10 +25,17 @@ namespace Lasik.Controllers
         [HttpPost]
         public async Task<string> Generate([FromBody] string javaCode, CancellationToken cancellationToken = default)
         {
-            var javaAst = await _parser.Parse(javaCode, cancellationToken);
+            try
+            {
+                var javaAst = await _parser.Parse(javaCode, cancellationToken);
 
-            if (javaAst is null) return ""; // TODO(Michael): Make this an error message
-            return _generator.Generate(javaAst);
+                if (javaAst is null) return ""; // TODO(Michael): Make this an error message
+                return _generator.Generate(javaAst);
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
     }
 }
