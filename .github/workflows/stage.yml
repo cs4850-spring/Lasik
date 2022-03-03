@@ -51,7 +51,7 @@ jobs:
           
   deploy:
     runs-on: ubuntu-latest
-    needs: build_gradle
+    needs: build_asp
 
     steps:
       - name: Deploy to Digital Ocean droplet via SSH action
