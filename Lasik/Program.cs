@@ -17,7 +17,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddScoped<Parser>();
 builder.Services.AddScoped<Generator>();
-var app = builder.Build();
 
 builder.Services.AddCors(options =>
 {
@@ -27,6 +26,9 @@ builder.Services.AddCors(options =>
             builder.WithOrigins("http://lasik.michaelepps.me");
         });
 });
+var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
