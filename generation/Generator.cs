@@ -38,7 +38,7 @@ namespace Generation
         private SyntaxNode CleanupAST(SyntaxNode ast)
         {
             ast = new InvocationRewriter().Visit(ast);
-            
+            ast = new MethodTitleCaseRewriter().Visit(ast);
             return Formatter.Format(ast, _workspace);
         }
     }
