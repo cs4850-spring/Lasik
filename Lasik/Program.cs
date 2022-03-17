@@ -20,15 +20,21 @@ builder.Services.AddScoped<Generator>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(
-        builder =>
-        {
-            builder.WithOrigins("http://lasik.michaelepps.me");
-        });
+    if (builder.Environment.IsProduction())
+    {
+        options.AddDefaultPolicy(
+            builder =>
+            {
+                builder.WithOrigins("http://lasik.michaelepps.me");
+            });
+    }
+    else
+    {
+        options.AddDefaultPolicy(builder => builder.AllowAnyOrigin());
+    }
+
 });
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -38,6 +44,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseCors();
 app.UseAuthorization();
 app.MapControllers();

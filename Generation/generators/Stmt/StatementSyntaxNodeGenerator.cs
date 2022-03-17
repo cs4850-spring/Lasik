@@ -20,6 +20,8 @@ namespace Generation.Generators.Stmt
                     new IfStatementSyntaxNodeGenerator().Generate(syntaxGenerator, ifStatement),
                 ForStatement forStatement => 
                     new ForStatementSyntaxNodeGenerator().Generate(syntaxGenerator, forStatement),
+                ForEachStatement forEachStatement =>
+                    new ForEachStatementSyntaxNodeGenerator().Generate(syntaxGenerator, forEachStatement),
                 _ => throw new ArgumentOutOfRangeException(nameof(node), node, null)
             };        
         }

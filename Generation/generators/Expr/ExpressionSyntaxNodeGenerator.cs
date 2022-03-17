@@ -30,6 +30,8 @@ namespace Generation.Generators.Expr
                     new FieldAccessExpressionSyntaxNodeGenerator().Generate(syntaxGenerator, fieldAccessExpression),
                 ThisExpression thisExpression => 
                     new ThisExpressionSyntaxNodeGenerator().Generate(syntaxGenerator,  thisExpression),
+                CastExpression castExpression =>
+                    new CastExpressionSyntaxNodeGeneration().Generate(syntaxGenerator, castExpression),
                 _ => throw new ArgumentOutOfRangeException(nameof(node), node, null)
             };
         }
