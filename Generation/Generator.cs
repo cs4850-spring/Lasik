@@ -1,6 +1,5 @@
 ﻿using System;
 using Generation.Generators;
-using Generation.Generators.Body;
 using Generation.Java.Nodes;
 using Generation.Rewriters;
 using Microsoft.CodeAnalysis;
@@ -29,7 +28,7 @@ namespace Generation
             
             // Java AST -> C# (Rosyln) AST
             // CompilationUnit -> CompilationUnitSyntax
-            var cSharpAst = new CompilationUnitSyntaxNodeGenerator().Generate(_syntaxGenerator, javaAst);
+            var cSharpAst = BodyGenerators.CompilationUnit(_syntaxGenerator, javaAst);
             cSharpAst = CleanupAST(cSharpAst);
 
             return cSharpAst.NormalizeWhitespace().ToFullString();
