@@ -42,8 +42,7 @@ public static class StatementGenerators
         var expression = ExpressionGenerators.Expression(syntaxGenerator, node.Iterable) as ExpressionSyntax;
         var statement = Statement(syntaxGenerator, node.Body) as StatementSyntax;
 
-        SyntaxFactory.ForEachStatement(type, identifier, expression, statement);
-        throw new System.NotImplementedException();
+        return SyntaxFactory.ForEachStatement(type, identifier, expression, statement);
     }
     
     public static SyntaxNode For(SyntaxGenerator syntaxGenerator, ForStatement node)
