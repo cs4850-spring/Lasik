@@ -7,14 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Java\Visitors\Roslyn"/>
-        <Folder Include="Java\Visitors\Transformers" />
-        <Folder Include="TokenGenerators" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.1.0-1.final" />
-        <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+      <PackageReference Include="Microsoft.Build" Version="17.0.0" />
+      <PackageReference Include="Microsoft.CodeAnalysis" Version="4.1.0" />
+      <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.2.0-1.final" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.1.0" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.1.0" />
+      <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.2.0-1.final" />
+      <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.2.0-1.final" />
     </ItemGroup>
 
 </Project>
