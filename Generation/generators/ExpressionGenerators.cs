@@ -192,7 +192,7 @@ namespace Generation.generators
             {
                 "PLUS" => (SyntaxKind.UnaryPlusExpression, SyntaxKind.PlusToken),
                 "MINUS" => (SyntaxKind.UnaryMinusExpression, SyntaxKind.MinusToken),
-                "BITWISE_COMPLEMENT" => (SyntaxKind.BitwiseNotExpression, SyntaxKind.CaretToken),
+                "BITWISE_COMPLEMENT" => (SyntaxKind.BitwiseNotExpression, SyntaxKind.TildeToken),
                 "PREFIX_INCREMENT" => (SyntaxKind.PreIncrementExpression, SyntaxKind.PlusPlusToken),
                 "PREFIX_DECREMENT" => (SyntaxKind.PreDecrementExpression, SyntaxKind.MinusMinusToken),
                 "POSTFIX_INCREMENT" => (SyntaxKind.PostIncrementExpression, SyntaxKind.PlusPlusToken),
