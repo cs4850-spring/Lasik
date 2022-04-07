@@ -61,6 +61,8 @@ namespace Generation.Java.Converters
                     JsonSerializer.Deserialize<ArrayInitializerExpression>(ref reader, options),
                 "com.github.javaparser.ast.expr.ObjectCreationExpr" =>
                     JsonSerializer.Deserialize<ObjectCreationExpression>(ref reader, options),
+                "com.github.javaparser.ast.expr.SuperExpr" => 
+                    JsonSerializer.Deserialize<SuperExpression>(ref reader, options),
                 _ => throw new ArgumentOutOfRangeException()
             };
             if (expression == null) return null;

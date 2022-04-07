@@ -24,6 +24,8 @@ namespace Generation.Java.Converters
                     JsonSerializer.Deserialize<MethodDeclaration>(ref reader, options),
                 "com.github.javaparser.ast.body.ClassOrInterfaceDeclaration" =>
                     JsonSerializer.Deserialize<ClassOrInterfaceDeclaration>(ref reader, options),
+                "com.github.javaparser.ast.body.ConstructorDeclaration" =>
+                    JsonSerializer.Deserialize<ConstructorDeclaration>(ref reader, options),
                 _ => throw new NotImplementedException()
             };
 

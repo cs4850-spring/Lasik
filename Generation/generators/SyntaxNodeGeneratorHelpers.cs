@@ -35,6 +35,7 @@ namespace Generation.generators
                     "STATIC" => DeclarationModifiers.Static,
                     "FINAL" => DeclarationModifiers.ReadOnly,
                     "CONST" => DeclarationModifiers.Const,
+                    "ABSTRACT" => DeclarationModifiers.Abstract,
                     _ => DeclarationModifiers.None
                 };
             }).FirstOrDefault(modifier => modifier != DeclarationModifiers.None, DeclarationModifiers.None);

@@ -29,10 +29,16 @@ namespace Generation.Rewriters
 
 
             var identifier = identifierSyntax.Identifier.ToString();
-            var upper = Char.ToUpper(identifier[0]);
+            var lastDot = identifier.LastIndexOf('.');
+            var index = lastDot switch
+            {
+                -1 => 0,
+                _ => lastDot + 1
+            };
+            var upper = Char.ToUpper(identifier[index]);
 
-            identifier = identifier.Remove(0, 1);
-            identifier = identifier.Insert(0, upper.ToString());
+            identifier = identifier.Remove(index, 1);
+            identifier = identifier.Insert(index, upper.ToString());
             var newIdentifier = identifierSyntax.Update(SyntaxFactory.Identifier(identifier));
 
             node = node.WithExpression(newIdentifier);

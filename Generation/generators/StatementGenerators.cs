@@ -23,6 +23,7 @@ namespace Generation.generators
                 ReturnStatement returnStatement => Return(syntaxGenerator, returnStatement),
                 ThrowStatement throwStatement => Throw(syntaxGenerator, throwStatement),
                 TryStatement tryStatement => Try(syntaxGenerator, tryStatement),
+                ExplicitConstructorInvocationStatement explicitConstructorInvocationStatement => SyntaxFactory.EmptyStatement(),
                 _ => throw new ArgumentOutOfRangeException(nameof(node), node, null)
             };        
         }

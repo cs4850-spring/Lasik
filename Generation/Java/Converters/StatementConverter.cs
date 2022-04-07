@@ -33,6 +33,8 @@ namespace Generation.Java.Converters
                     JsonSerializer.Deserialize<ThrowStatement>(ref reader, options),
                 "com.github.javaparser.ast.stmt.TryStmt" =>
                     JsonSerializer.Deserialize<TryStatement>(ref reader, options),
+                "com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt" =>
+                    JsonSerializer.Deserialize<ExplicitConstructorInvocationStatement>(ref reader, options),
                 _ => throw new NotImplementedException()
             };
 

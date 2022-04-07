@@ -31,6 +31,7 @@ namespace Generation.generators
                 ArrayAccessExpression arrayAccessExpression => ArrayAccess(syntaxGenerator, arrayAccessExpression),
                 ArrayInitializerExpression arrayInitializerExpression => ArrayInitializer(syntaxGenerator, arrayInitializerExpression),
                 ObjectCreationExpression objectCreationExpression => ObjectCreation(syntaxGenerator, objectCreationExpression),
+                SuperExpression superExpression => Super(syntaxGenerator, superExpression),
                 _ => throw new ArgumentOutOfRangeException(nameof(node), node, null)
             };
         }
@@ -275,6 +276,11 @@ namespace Generation.generators
             var arguments = node?.Arguments?.Select(argument => Expression(syntaxGenerator, argument));
             return syntaxGenerator.ObjectCreationExpression(type, arguments);
         }
+
+        public static SyntaxNode Super(SyntaxGenerator syntaxGenerator, SuperExpression node)
+        {
+            return syntaxGenerator.BaseExpression();
+        }
         
         #region Helpers
         private static String CollapseScope(ExpressionSyntax scope)
@@ -283,6 +289,7 @@ namespace Generation.generators
             {
                 MemberAccessExpressionSyntax memberAccess => $"{CollapseScope(memberAccess.Expression)}.{memberAccess.Name}",
                 ThisExpressionSyntax thisExpression => "this",
+                BaseExpressionSyntax baseExpressionSyntax => "base",
                 IdentifierNameSyntax identifierName => $"{identifierName.Identifier.ValueText}",
                 null => "",
                 _ => throw new ArgumentOutOfRangeException(nameof(scope), scope, null)

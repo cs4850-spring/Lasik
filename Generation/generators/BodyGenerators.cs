@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Generation.Java.Nodes;
 using Generation.Java.Nodes.Members;
+using Generation.Java.Nodes.Statements;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -38,6 +40,7 @@ namespace Generation.generators
                 FieldDeclaration fieldDeclaration => FieldDeclaration(syntaxGenerator, fieldDeclaration),
                 MethodDeclaration methodDeclaration => MethodDeclaration(syntaxGenerator, methodDeclaration),
                 ClassOrInterfaceDeclaration classOrInterfaceDeclaration => ClassOrInterface(syntaxGenerator, classOrInterfaceDeclaration),
+                ConstructorDeclaration constructorDeclaration => ConstructorDeclaration(syntaxGenerator, constructorDeclaration),
                 _ => throw new System.NotImplementedException()
             };
         }
@@ -45,7 +48,11 @@ namespace Generation.generators
         public static SyntaxNode ClassOrInterface(SyntaxGenerator syntaxGenerator, ClassOrInterfaceDeclaration node)
         {
             var accessibility = SyntaxNodeGeneratorHelpers.AccessibilityFromModifiers(node.Modifiers);
+            
             var declarationModifiers = SyntaxNodeGeneratorHelpers.DeclarationModifiersFromModifier(node.Modifiers);
+            
+            // Inner classes can be static in java but must not be static here
+            declarationModifiers = declarationModifiers.WithIsStatic(false);
             var members =
                 node?.Members?.Select(member => BodyGenerators.Member(syntaxGenerator, member));
             
@@ -76,7 +83,9 @@ namespace Generation.generators
             var accessibility = SyntaxNodeGeneratorHelpers.AccessibilityFromModifiers(node.Modifiers);
             var declarationModifiers = SyntaxNodeGeneratorHelpers.DeclarationModifiersFromModifier(node.Modifiers);
 
+
             var block = StatementGenerators.BlockStatement(syntaxGenerator, node.Body) as BlockSyntax;
+
             return syntaxGenerator.MethodDeclaration(node.SimpleName.Identifier, parameters, null, returnType, accessibility,
                 declarationModifiers, block?.Statements);
         }
@@ -122,6 +131,33 @@ namespace Generation.generators
             fieldDeclaration = AddDeclarationModifiers(fieldDeclaration, declarationModifiers);
             return fieldDeclaration;
 
+        }
+
+        public static SyntaxNode ConstructorDeclaration(SyntaxGenerator syntaxGenerator, ConstructorDeclaration node)
+        {
+            var name = node.SimpleName.Identifier;
+            var parameters = node?.Parameters?.Select(parameter => Parameter(syntaxGenerator, parameter));
+            var accessibility = SyntaxNodeGeneratorHelpers.AccessibilityFromModifiers(node.Modifiers);
+            var declarationModifiers = SyntaxNodeGeneratorHelpers.DeclarationModifiersFromModifier(node.Modifiers);
+
+            var superCallStatement = node?.Body?.Statements?.Find(statement => statement is ExplicitConstructorInvocationStatement);
+
+            IEnumerable<SyntaxNode> baseConstructorArguments = null;
+            if (superCallStatement is ExplicitConstructorInvocationStatement superCall)
+            {
+                baseConstructorArguments = superCall.Arguments?.Select(argument => ExpressionGenerators.Expression(syntaxGenerator, argument));
+            }
+            
+            var body = StatementGenerators.BlockStatement(syntaxGenerator, node.Body) as BlockSyntax;
+            
+            // NOTE (MICHAEL): The super statement in java IS ALWAYS to be the first statement in the body
+            if (superCallStatement != null)
+            {
+                body = body.WithStatements(body.Statements.RemoveAt(0));
+            }
+            var constructorDeclaration = syntaxGenerator.ConstructorDeclaration(name, parameters, accessibility, declarationModifiers, baseConstructorArguments, body?.Statements) as ConstructorDeclarationSyntax;
+
+            return constructorDeclaration;
         }
 
         #region Helpers

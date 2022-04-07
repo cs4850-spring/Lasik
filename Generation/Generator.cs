@@ -39,6 +39,19 @@ namespace Generation
             ast = new InvocationRewriter().Visit(ast);
             ast = new MethodTitleCaseRewriter().Visit(ast);
             ast = new FieldTitleCaseRewriter().Visit(ast);
+            var Mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
+            var compilation = CSharpCompilation.Create("MyCompilation",
+                syntaxTrees: new[] { ast.SyntaxTree }, references: new[] { Mscorlib });
+//Note that we must specify the tree for which we want the model.
+//Each tree has its own semantic model
+            var model = compilation.GetSemanticModel(ast.SyntaxTree);
+            ast = new VirtualMethodRewriter(model).Visit(ast);
+            
+            compilation = CSharpCompilation.Create("MyCompilation",
+                syntaxTrees: new[] { ast.SyntaxTree }, references: new[] { Mscorlib });
+            model = compilation.GetSemanticModel(ast.SyntaxTree);
+            ast = new OverrideMethodRewriter(model).Visit(ast);
+
             return Formatter.Format(ast, _workspace);
         }
     }
