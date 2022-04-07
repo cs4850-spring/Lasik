@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -20,9 +21,13 @@ namespace Generation.Rewriters
                 "System.out.println" => "Console.WriteLine",
                 _ => identifier.ToString()
             };
+            
+            newText = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(newText);
                 
             var newIdentifier = identifier.Update(SyntaxFactory.Identifier(newText));
+
             return node.WithExpression(newIdentifier);
         }
+        
     }
 }

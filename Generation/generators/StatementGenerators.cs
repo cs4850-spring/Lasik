@@ -71,12 +71,20 @@ namespace Generation.generators
         public static SyntaxNode If(SyntaxGenerator syntaxGenerator, IfStatement node)
         {
             var condition = ExpressionGenerators.Expression(syntaxGenerator, node.Condition);
-            var elseStatement = Statement(syntaxGenerator, node.Else);
+            var elseStatement = node.Else != null
+                ? Statement(syntaxGenerator, node.Else)
+                : null;
             var thenStatement = Statement(syntaxGenerator, node.Then) as BlockSyntax;
 
-            return elseStatement is BlockSyntax elseBlock
-                ? syntaxGenerator.IfStatement(condition, thenStatement?.Statements, elseBlock?.Statements)
-                : syntaxGenerator.IfStatement(condition, thenStatement?.Statements, elseStatement);
+            if (elseStatement is BlockSyntax elseBlock)
+            {
+                return syntaxGenerator.IfStatement(condition, thenStatement?.Statements, elseBlock?.Statements);
+            }
+            
+            var elseClause = elseStatement != null 
+                ? SyntaxFactory.ElseClause(elseStatement as StatementSyntax)
+                : null;
+            return SyntaxFactory.IfStatement(condition as ExpressionSyntax, thenStatement, elseClause);
         }
     
         public static SyntaxNode VariableDeclaration(SyntaxGenerator syntaxGenerator, VariableDeclarationExpression node)

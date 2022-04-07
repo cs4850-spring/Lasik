@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Generation.Java.Nodes;
 using Generation.Java.Nodes.Expressions;
@@ -25,14 +26,17 @@ namespace Generation.generators
                 FieldAccessExpression fieldAccessExpression => FieldAccess(syntaxGenerator, fieldAccessExpression),
                 ThisExpression thisExpression => This(syntaxGenerator,  thisExpression),
                 CastExpression castExpression => Cast(syntaxGenerator, castExpression),
+                EnclosedExpression enclosedExpression => Enclosed(syntaxGenerator, enclosedExpression),
                 ArrayCreationExpression arrayCreationExpression => ArrayCreation(syntaxGenerator, arrayCreationExpression),
+                ArrayAccessExpression arrayAccessExpression => ArrayAccess(syntaxGenerator, arrayAccessExpression),
+                ArrayInitializerExpression arrayInitializerExpression => ArrayInitializer(syntaxGenerator, arrayInitializerExpression),
                 _ => throw new ArgumentOutOfRangeException(nameof(node), node, null)
             };
         }
 
         public static SyntaxNode Assignment(SyntaxGenerator syntaxGenerator, AssignExpression node)
         {
-            var name = Name(syntaxGenerator, node.Target);
+            var name = Expression(syntaxGenerator, node.Target);
             var value = Expression(syntaxGenerator, node.Value);
             var (syntaxKind, syntaxToken) = node.Operator switch
             {
@@ -184,6 +188,8 @@ namespace Generation.generators
 
             var (syntaxKind, syntaxToken) = node.Operator switch
             {
+                "PLUS" => (SyntaxKind.UnaryPlusExpression, SyntaxKind.PlusToken),
+                "MINUS" => (SyntaxKind.UnaryMinusExpression, SyntaxKind.MinusToken),
                 "BITWISE_COMPLEMENT" => (SyntaxKind.BitwiseNotExpression, SyntaxKind.CaretToken),
                 "PREFIX_INCREMENT" => (SyntaxKind.PreIncrementExpression, SyntaxKind.PlusPlusToken),
                 "PREFIX_DECREMENT" => (SyntaxKind.PreDecrementExpression, SyntaxKind.MinusMinusToken),
@@ -195,6 +201,8 @@ namespace Generation.generators
             var operandToken = SyntaxFactory.Token(syntaxToken);
             return node.Operator switch
             {
+                "PLUS" => SyntaxFactory.PrefixUnaryExpression(syntaxKind, operandToken, expression),
+                "MINUS" => SyntaxFactory.PrefixUnaryExpression(syntaxKind, operandToken, expression),
                 "BITWISE_COMPLEMENT" => SyntaxFactory.PrefixUnaryExpression(syntaxKind, operandToken, expression),
                 "PREFIX_INCREMENT" => SyntaxFactory.PrefixUnaryExpression(syntaxKind, operandToken, expression),
                 "PREFIX_DECREMENT" => SyntaxFactory.PrefixUnaryExpression(syntaxKind, operandToken, expression),
@@ -234,7 +242,31 @@ namespace Generation.generators
             var rankSpecifier = SyntaxFactory.ArrayRankSpecifier(SyntaxFactory.SeparatedList<ExpressionSyntax>(levels));
             var arrayType = SyntaxFactory.ArrayType(type, SyntaxFactory.List(new[] {rankSpecifier}));
             return SyntaxFactory.ArrayCreationExpression(arrayType);
-        }        
+        }
+
+        public static SyntaxNode ArrayAccess(SyntaxGenerator syntaxGenerator, ArrayAccessExpression node)
+        {
+            var name = node.Name;
+            var indexExpressions = new List<SyntaxNode>();
+            while(name is ArrayAccessExpression arrayAccessExpression)
+            {
+                indexExpressions.Add(Expression(syntaxGenerator, arrayAccessExpression.Index));
+                name = arrayAccessExpression.Name;
+            }
+
+            indexExpressions.Reverse();
+            var expression = Expression(syntaxGenerator, name);
+            indexExpressions.Add(Expression(syntaxGenerator, node.Index));
+            
+            return syntaxGenerator.ElementAccessExpression(expression, indexExpressions);
+        }
+
+        public static SyntaxNode ArrayInitializer(SyntaxGenerator syntaxGenerator, ArrayInitializerExpression node)
+        {
+            var expressions = node?.Values.Select(value => Expression(syntaxGenerator, value));
+            return SyntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
+                SyntaxFactory.SeparatedList(expressions));
+        }
         
         #region Helpers
         private static String CollapseScope(ExpressionSyntax scope)
