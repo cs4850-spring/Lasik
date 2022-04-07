@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Generation.Java.Nodes
+namespace generation.Java.Nodes
 {
     public class Modifier : Node
     {

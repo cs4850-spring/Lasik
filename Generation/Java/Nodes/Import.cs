@@ -1,20 +1,18 @@
 ﻿using System.ComponentModel;
 using System.Text.Json.Serialization;
-using Generation.Java.Converters;
 
-namespace Generation.Java.Nodes
+namespace generation.Java.Nodes
 {
-    public class Import : Node
+    public class Import
     {
         [JsonPropertyName("isAsterisk")]
-        [JsonConverter(typeof(BoolConverter))]
+        [JsonConverter(typeof(StringConverter))]
         public bool IsAsterisk { get; set; }
 
         [JsonPropertyName("isStatic")]
-        [JsonConverter(typeof(BoolConverter))]
+        [JsonConverter(typeof(StringConverter))]
         public bool IsStatic { get; set; }
 
-        [JsonPropertyName("name")]
-        public SimpleName Name { get; set; }
+        [JsonPropertyName("name")] public Name Name { get; set; }
     }
 }
