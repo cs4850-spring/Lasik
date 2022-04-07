@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 using Generation.Java.Nodes.Members;
+using Generation.Java.Nodes.Types;
 
 namespace Generation.Java.Converters
 {
@@ -21,6 +22,8 @@ namespace Generation.Java.Converters
                     JsonSerializer.Deserialize<FieldDeclaration>(ref reader, options),
                 "com.github.javaparser.ast.body.MethodDeclaration" =>
                     JsonSerializer.Deserialize<MethodDeclaration>(ref reader, options),
+                "com.github.javaparser.ast.body.ClassOrInterfaceDeclaration" =>
+                    JsonSerializer.Deserialize<ClassOrInterfaceDeclaration>(ref reader, options),
                 _ => throw new NotImplementedException()
             };
 

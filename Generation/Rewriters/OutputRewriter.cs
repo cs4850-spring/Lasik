@@ -11,7 +11,6 @@ namespace Generation.Rewriters
     {
         public override SyntaxNode? VisitInvocationExpression(InvocationExpressionSyntax node)
         {
-            base.VisitInvocationExpression(node);
 
             if (node.Expression is not IdentifierNameSyntax identifier) return node;
             
@@ -22,11 +21,11 @@ namespace Generation.Rewriters
                 _ => identifier.ToString()
             };
             
-            newText = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(newText);
                 
             var newIdentifier = identifier.Update(SyntaxFactory.Identifier(newText));
 
-            return node.WithExpression(newIdentifier);
+            node = node.WithExpression(newIdentifier);
+            return base.VisitInvocationExpression(node);
         }
         
     }

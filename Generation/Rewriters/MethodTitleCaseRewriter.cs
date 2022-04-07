@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -13,8 +14,29 @@ namespace Generation.Rewriters
         public override SyntaxNode? VisitMethodDeclaration(MethodDeclarationSyntax node)
         {
             var identifier = node.Identifier.Text;
-            identifier = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(identifier);
-            return node.WithIdentifier(SyntaxFactory.Identifier(identifier));
+            var upper = Char.ToUpper(identifier[0]);
+
+            identifier = identifier.Remove(0, 1);
+            identifier = identifier.Insert(0, upper.ToString());
+            node = node.WithIdentifier(SyntaxFactory.Identifier(identifier));
+            return base.VisitMethodDeclaration(node);
+        }
+
+        public override SyntaxNode? VisitInvocationExpression(InvocationExpressionSyntax node)
+        {
+            
+            if (node.Expression is not IdentifierNameSyntax identifierSyntax) return node;
+
+
+            var identifier = identifierSyntax.Identifier.ToString();
+            var upper = Char.ToUpper(identifier[0]);
+
+            identifier = identifier.Remove(0, 1);
+            identifier = identifier.Insert(0, upper.ToString());
+            var newIdentifier = identifierSyntax.Update(SyntaxFactory.Identifier(identifier));
+
+            node = node.WithExpression(newIdentifier);
+            return base.VisitInvocationExpression(node);
         }
     }
 }

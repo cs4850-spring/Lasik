@@ -38,6 +38,7 @@ namespace Generation
         {
             ast = new InvocationRewriter().Visit(ast);
             ast = new MethodTitleCaseRewriter().Visit(ast);
+            ast = new FieldTitleCaseRewriter().Visit(ast);
             return Formatter.Format(ast, _workspace);
         }
     }

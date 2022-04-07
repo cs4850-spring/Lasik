@@ -20,6 +20,9 @@ namespace Generation.generators
                 IfStatement ifStatement => If(syntaxGenerator, ifStatement),
                 ForStatement forStatement => For(syntaxGenerator, forStatement),
                 ForEachStatement forEachStatement => ForEach(syntaxGenerator, forEachStatement),
+                ReturnStatement returnStatement => Return(syntaxGenerator, returnStatement),
+                ThrowStatement throwStatement => Throw(syntaxGenerator, throwStatement),
+                TryStatement tryStatement => Try(syntaxGenerator, tryStatement),
                 _ => throw new ArgumentOutOfRangeException(nameof(node), node, null)
             };        
         }
@@ -91,7 +94,32 @@ namespace Generation.generators
         {
             return BodyGenerators.Variable(syntaxGenerator, node.Variables.First());
         }
+
+        public static SyntaxNode Return(SyntaxGenerator syntaxGenerator, ReturnStatement node)
+        {
+            var expression = ExpressionGenerators.Expression(syntaxGenerator, node.Expression);
+            return syntaxGenerator.ReturnStatement(expression);
+        }
     
-    
+        public static SyntaxNode Throw(SyntaxGenerator syntaxGenerator, ThrowStatement node)
+        {
+            var expression = ExpressionGenerators.Expression(syntaxGenerator, node.Expression);
+            return syntaxGenerator.ThrowStatement(expression);
+        }
+
+        public static SyntaxNode Try(SyntaxGenerator syntaxGenerator, TryStatement node)
+        {
+            var tryBlock = BlockStatement(syntaxGenerator, node.TryBlock) as BlockSyntax;
+            var finallyBlock = BlockStatement(syntaxGenerator, node.FinallyBlock) as BlockSyntax;
+
+            var catchClauses = node?.CatchClauses?.Select(clause =>
+            {
+                var parameter = BodyGenerators.Parameter(syntaxGenerator, clause.Parameter) as ParameterSyntax;
+                var clauseBody = BlockStatement(syntaxGenerator, clause.Body) as BlockSyntax;
+                return syntaxGenerator.CatchClause(parameter.Type, parameter.Identifier.Text, clauseBody?.Statements);
+            });
+            
+            return syntaxGenerator.TryCatchStatement(tryBlock?.Statements, catchClauses, finallyBlock?.Statements);
+        }
     }
 }

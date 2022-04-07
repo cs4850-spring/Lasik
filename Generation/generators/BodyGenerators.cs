@@ -37,10 +37,36 @@ namespace Generation.generators
             {
                 FieldDeclaration fieldDeclaration => FieldDeclaration(syntaxGenerator, fieldDeclaration),
                 MethodDeclaration methodDeclaration => MethodDeclaration(syntaxGenerator, methodDeclaration),
+                ClassOrInterfaceDeclaration classOrInterfaceDeclaration => ClassOrInterface(syntaxGenerator, classOrInterfaceDeclaration),
                 _ => throw new System.NotImplementedException()
             };
         }
+        
+        public static SyntaxNode ClassOrInterface(SyntaxGenerator syntaxGenerator, ClassOrInterfaceDeclaration node)
+        {
+            var accessibility = SyntaxNodeGeneratorHelpers.AccessibilityFromModifiers(node.Modifiers);
+            var declarationModifiers = SyntaxNodeGeneratorHelpers.DeclarationModifiersFromModifier(node.Modifiers);
+            var members =
+                node?.Members?.Select(member => BodyGenerators.Member(syntaxGenerator, member));
+            
+            // Check if the node is a declaration. If So, we just want to return a TypeSyntax.
+            // For instance: In `public Bar foo()` `Bar` is a not a declaration
+            if (IsDeclaration(node))
+            {
+                return SyntaxFactory.ParseTypeName(node.SimpleName.Identifier);
+            }
+            
+            var interfaceTypes = 
+                node.ImplementedTypes.Select(type => TypeGenerators.Type(syntaxGenerator, type));
+            var extendsType = 
+                node.ExtendedTypes.Select(type => TypeGenerators.Type(syntaxGenerator, type)).FirstOrDefault(defaultValue: null);
+            
+            return node.IsInterface 
+                ? syntaxGenerator.InterfaceDeclaration(node.SimpleName.Identifier, null, accessibility, interfaceTypes, members) 
+                : syntaxGenerator.ClassDeclaration(node.SimpleName.Identifier, null, accessibility, declarationModifiers, extendsType, interfaceTypes, members);
+        }
     
+        
         public static SyntaxNode MethodDeclaration(SyntaxGenerator syntaxGenerator, MethodDeclaration node)
         {
             var parameters = node.Parameters?
@@ -99,7 +125,11 @@ namespace Generation.generators
         }
 
         #region Helpers
-
+        private static bool IsDeclaration(ClassOrInterfaceDeclaration node)
+        {
+            return (node?.Modifiers == null && node?.Members == null) ||
+                   (node?.Modifiers?.Count == 0 && node?.Members?.Count == 0);
+        }
 
         private static VariableDeclarationSyntax GenerateVariableDeclaration(SyntaxGenerator syntaxGenerator, FieldDeclaration node) 
         {

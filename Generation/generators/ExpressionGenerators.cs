@@ -30,6 +30,7 @@ namespace Generation.generators
                 ArrayCreationExpression arrayCreationExpression => ArrayCreation(syntaxGenerator, arrayCreationExpression),
                 ArrayAccessExpression arrayAccessExpression => ArrayAccess(syntaxGenerator, arrayAccessExpression),
                 ArrayInitializerExpression arrayInitializerExpression => ArrayInitializer(syntaxGenerator, arrayInitializerExpression),
+                ObjectCreationExpression objectCreationExpression => ObjectCreation(syntaxGenerator, objectCreationExpression),
                 _ => throw new ArgumentOutOfRangeException(nameof(node), node, null)
             };
         }
@@ -266,6 +267,13 @@ namespace Generation.generators
             var expressions = node?.Values.Select(value => Expression(syntaxGenerator, value));
             return SyntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
                 SyntaxFactory.SeparatedList(expressions));
+        }
+
+        public static SyntaxNode ObjectCreation(SyntaxGenerator syntaxGenerator, ObjectCreationExpression node)
+        {
+            var type = TypeGenerators.Type(syntaxGenerator, node.Type);
+            var arguments = node?.Arguments?.Select(argument => Expression(syntaxGenerator, argument));
+            return syntaxGenerator.ObjectCreationExpression(type, arguments);
         }
         
         #region Helpers

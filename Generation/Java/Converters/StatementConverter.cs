@@ -27,6 +27,12 @@ namespace Generation.Java.Converters
                     JsonSerializer.Deserialize<ForStatement>(ref reader, options),
                 "com.github.javaparser.ast.stmt.ForEachStmt" =>
                     JsonSerializer.Deserialize<ForEachStatement>(ref reader, options),
+                "com.github.javaparser.ast.stmt.ReturnStmt" =>
+                    JsonSerializer.Deserialize<ReturnStatement>(ref reader, options),
+                "com.github.javaparser.ast.stmt.ThrowStmt" =>
+                    JsonSerializer.Deserialize<ThrowStatement>(ref reader, options),
+                "com.github.javaparser.ast.stmt.TryStmt" =>
+                    JsonSerializer.Deserialize<TryStatement>(ref reader, options),
                 _ => throw new NotImplementedException()
             };
 
