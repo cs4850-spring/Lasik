@@ -25,6 +25,7 @@ namespace Generation.generators
                 FieldAccessExpression fieldAccessExpression => FieldAccess(syntaxGenerator, fieldAccessExpression),
                 ThisExpression thisExpression => This(syntaxGenerator,  thisExpression),
                 CastExpression castExpression => Cast(syntaxGenerator, castExpression),
+                ArrayCreationExpression arrayCreationExpression => ArrayCreation(syntaxGenerator, arrayCreationExpression),
                 _ => throw new ArgumentOutOfRangeException(nameof(node), node, null)
             };
         }
@@ -217,6 +218,24 @@ namespace Generation.generators
             return SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, declarationExpression, initializer as ExpressionSyntax);
         }
 
+        public static SyntaxNode Enclosed(SyntaxGenerator syntaxGenerator, EnclosedExpression node)
+        {
+            var inner = Expression(syntaxGenerator, node.Inner) as ExpressionSyntax;
+            return SyntaxFactory.ParenthesizedExpression(inner);
+        }
+
+        public static SyntaxNode ArrayCreation(SyntaxGenerator syntaxGenerator, ArrayCreationExpression node)
+        {
+            // TODO (Michael): Add support for initialized values
+            var type = TypeGenerators.Type(syntaxGenerator, node.Type) as TypeSyntax;
+            var levels = node.Levels?
+                .Select(level => Expression(syntaxGenerator, level.Dimension) as ExpressionSyntax);
+            
+            var rankSpecifier = SyntaxFactory.ArrayRankSpecifier(SyntaxFactory.SeparatedList<ExpressionSyntax>(levels));
+            var arrayType = SyntaxFactory.ArrayType(type, SyntaxFactory.List(new[] {rankSpecifier}));
+            return SyntaxFactory.ArrayCreationExpression(arrayType);
+        }        
+        
         #region Helpers
         private static String CollapseScope(ExpressionSyntax scope)
         {

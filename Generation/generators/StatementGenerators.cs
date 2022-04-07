@@ -43,7 +43,6 @@ namespace Generation.generators
             var identifier = variable.SimpleName.Identifier;
             var expression = ExpressionGenerators.Expression(syntaxGenerator, node.Iterable) as ExpressionSyntax;
             var statement = Statement(syntaxGenerator, node.Body) as StatementSyntax;
-
             return SyntaxFactory.ForEachStatement(type, identifier, expression, statement);
         }
     
