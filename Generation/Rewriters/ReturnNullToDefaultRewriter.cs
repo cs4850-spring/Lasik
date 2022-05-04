@@ -11,6 +11,7 @@ namespace Generation.Rewriters
     {
         public override SyntaxNode? VisitMethodDeclaration(MethodDeclarationSyntax node)
         {
+            if (node.Body is null) return base.VisitMethodDeclaration(node);
             var body = node.Body;
 
             IEnumerable<StatementSyntax> statements = Array.Empty<StatementSyntax>();
