@@ -26,11 +26,28 @@ namespace Generation.generators
     
         public static SyntaxNode Array(SyntaxGenerator syntaxGenerator, ArrayJavaType node)
         {
-            var component = Type(syntaxGenerator, node.ComponentType);
+            var identifier = ArrayTypeIdentifier(node.ComponentType);
+            var type = SyntaxFactory.ParseTypeName(identifier);
 
-            return syntaxGenerator.ArrayTypeExpression(component);
+            return type;
         }
     
+        private static string ArrayTypeIdentifier(JavaType componentType)
+        {
+            var depth = 0;
+            
+            while (componentType is ArrayJavaType arrayJavaType)
+            {
+                componentType = arrayJavaType.ComponentType;
+                depth++;
+            }
+
+            var commas = new String(',', depth).TrimEnd();
+            
+            return $"{componentType.Identifier()}[{commas}]";
+            
+        }
+
         public static SyntaxNode ClassOrInterface(SyntaxGenerator syntaxGenerator, ClassOrInterfaceJavaType node)
         {
             var accessibility = SyntaxNodeGeneratorHelpers.AccessibilityFromModifiers(node.Modifiers);
