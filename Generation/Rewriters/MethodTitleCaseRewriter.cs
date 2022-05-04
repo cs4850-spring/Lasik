@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -22,27 +25,38 @@ namespace Generation.Rewriters
             return base.VisitMethodDeclaration(node);
         }
 
+        
+
         public override SyntaxNode? VisitInvocationExpression(InvocationExpressionSyntax node)
-        {
-            
+        { 
             if (node.Expression is not IdentifierNameSyntax identifierSyntax) return node;
 
 
             var identifier = identifierSyntax.Identifier.ToString();
-            var lastDot = identifier.LastIndexOf('.');
-            var index = lastDot switch
+            var dotIndicies = IndexOfAll(identifier,".");
+
+            foreach (var dotIndex in dotIndicies)
             {
-                -1 => 0,
-                _ => lastDot + 1
-            };
-            var upper = Char.ToUpper(identifier[index]);
+                var index = dotIndex + 1;
+                var upper = Char.ToUpper(identifier[index]);
 
-            identifier = identifier.Remove(index, 1);
-            identifier = identifier.Insert(index, upper.ToString());
-            var newIdentifier = identifierSyntax.Update(SyntaxFactory.Identifier(identifier));
+                identifier = identifier.Remove(index, 1);
+                identifier = identifier.Insert(index, upper.ToString());
+                var newIdentifier = identifierSyntax.Update(SyntaxFactory.Identifier(identifier));
 
-            node = node.WithExpression(newIdentifier);
+                node = node.WithExpression(newIdentifier);
+            }
+
             return base.VisitInvocationExpression(node);
+        }
+        
+        public static IEnumerable<int> IndexOfAll(string sourceString, string subString)
+        {
+            subString = Regex.Escape(subString);
+            foreach (Match match in Regex.Matches(sourceString, subString))
+            {
+                yield return match.Index;
+            }        
         }
     }
 }

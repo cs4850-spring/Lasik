@@ -56,40 +56,58 @@ namespace Generation.generators
             var members =
                 node?.Members?.Select(member => BodyGenerators.Member(syntaxGenerator, member));
             
+            var typeArguments =
+                node?.TypeArguments?.Select(typeArgument => TypeGenerators.Type(syntaxGenerator, typeArgument));
+            node.SimpleName.Identifier = SyntaxNodeGeneratorHelpers.Unbox(node.SimpleName.Identifier);
             // Check if the node is a declaration. If So, we just want to return a TypeSyntax.
             // For instance: In `public Bar foo()` `Bar` is a not a declaration
             if (IsDeclaration(node))
             {
-                return SyntaxFactory.ParseTypeName(node.SimpleName.Identifier);
+                var typeSyntax = SyntaxFactory.ParseTypeName(node.SimpleName.Identifier);
+                if (typeArguments?.Count() > 0)
+                {
+                    return syntaxGenerator.WithTypeArguments(typeSyntax, typeArguments);
+                }
+                else
+                {
+                    return typeSyntax;
+                }
             }
-            
             var interfaceTypes = 
                 node.ImplementedTypes.Select(type => TypeGenerators.Type(syntaxGenerator, type));
             var extendsType = 
                 node.ExtendedTypes.Select(type => TypeGenerators.Type(syntaxGenerator, type)).FirstOrDefault(defaultValue: null);
             
-            return node.IsInterface 
-                ? syntaxGenerator.InterfaceDeclaration(node.SimpleName.Identifier, null, accessibility, interfaceTypes, members) 
+            var syntax = node.IsInterface 
+                ? syntaxGenerator.InterfaceDeclaration(node.SimpleName.Identifier, null, accessibility, interfaceTypes, members)
                 : syntaxGenerator.ClassDeclaration(node.SimpleName.Identifier, null, accessibility, declarationModifiers, extendsType, interfaceTypes, members);
+            
+            return SyntaxNodeGeneratorHelpers.AddTypeParamsAndConstraints(syntaxGenerator, syntax, node?.TypeParameters);
         }
-    
-        
+
         public static SyntaxNode MethodDeclaration(SyntaxGenerator syntaxGenerator, MethodDeclaration node)
         {
             var parameters = node.Parameters?
                 .Select(parameter => Parameter(syntaxGenerator, parameter));
-            
-            var returnType = SyntaxFactory.ParseTypeName(node.JavaType.Identifier());
+
+            var returnType = TypeGenerators.Type(syntaxGenerator, node.JavaType);
             var accessibility = SyntaxNodeGeneratorHelpers.AccessibilityFromModifiers(node.Modifiers);
             var declarationModifiers = SyntaxNodeGeneratorHelpers.DeclarationModifiersFromModifier(node.Modifiers);
 
 
             var block = StatementGenerators.BlockStatement(syntaxGenerator, node.Body) as BlockSyntax;
 
-            return syntaxGenerator.MethodDeclaration(node.SimpleName.Identifier, parameters, null, returnType, accessibility,
+            var syntax = syntaxGenerator.MethodDeclaration(node.SimpleName.Identifier, parameters, null, returnType, accessibility,
                 declarationModifiers, block?.Statements);
+            
+            return SyntaxNodeGeneratorHelpers.AddTypeParamsAndConstraints(syntaxGenerator, syntax, node?.TypeParameters);
         }
-    
+
+        public static SyntaxNode TypeParameters(SyntaxGenerator syntaxGenerator, TypeParameter node)
+        {
+            return SyntaxFactory.TypeParameter(node.Name.Identifier);
+        }
+        
         public static SyntaxNode Name(SyntaxGenerator syntaxGenerator, SimpleName node)
         {
             var identifier = syntaxGenerator.IdentifierName(node.Identifier);
@@ -170,7 +188,7 @@ namespace Generation.generators
         private static VariableDeclarationSyntax GenerateVariableDeclaration(SyntaxGenerator syntaxGenerator, FieldDeclaration node) 
         {
             var firstVariable = node.Variables.First();
-            var type = SyntaxFactory.ParseTypeName(firstVariable.JavaType.Identifier());
+            var type = TypeGenerators.Type(syntaxGenerator, firstVariable.JavaType) as TypeSyntax;
             // NOTE (MICHAEL): We cant use the variable syntax node generator here as the field declaration 
             // requires declarators specifically.
             var variableDeclarators = node?.Variables?.Select(variable =>

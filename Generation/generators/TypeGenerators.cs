@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Generation.Java.Nodes;
 using Generation.Java.Nodes.Types;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -35,12 +37,23 @@ namespace Generation.generators
             var declarationModifiers = SyntaxNodeGeneratorHelpers.DeclarationModifiersFromModifier(node.Modifiers);
             var members =
                 node?.Members?.Select(member => BodyGenerators.Member(syntaxGenerator, member));
-            
+            var typeArguments =
+                node?.TypeArguments?.Select(typeArgument => TypeGenerators.Type(syntaxGenerator, typeArgument));
+            node.SimpleName.Identifier = SyntaxNodeGeneratorHelpers.Unbox(node.SimpleName.Identifier);
+
             // Check if the node is a declaration. If So, we just want to return a TypeSyntax.
             // For instance: In `public Bar foo()` `Bar` is a not a declaration
             if (IsDeclaration(node))
             {
-                return SyntaxFactory.ParseTypeName(node.SimpleName.Identifier);
+                var typeSyntax = SyntaxFactory.ParseTypeName(node.SimpleName.Identifier);
+                if (typeArguments?.Count() > 0)
+                {
+                    return syntaxGenerator.WithTypeArguments(typeSyntax, typeArguments);
+                }
+                else
+                {
+                    return typeSyntax;
+                }
             }
             
             var interfaceTypes = 
@@ -48,11 +61,15 @@ namespace Generation.generators
             var extendsType = 
                 node.ExtendedTypes.Select(type => Type(syntaxGenerator, type)).FirstOrDefault(defaultValue: null);
             
-            return node.IsInterface 
+            var syntax = node.IsInterface 
                 ? syntaxGenerator.InterfaceDeclaration(node.SimpleName.Identifier, null, accessibility, interfaceTypes, members) 
                 : syntaxGenerator.ClassDeclaration(node.SimpleName.Identifier, null, accessibility, declarationModifiers, extendsType, interfaceTypes, members);
+            
+            return SyntaxNodeGeneratorHelpers.AddTypeParamsAndConstraints(syntaxGenerator, syntax, node?.TypeParameters);
         }
-    
+
+
+
         public static SyntaxNode Primitive(SyntaxGenerator syntaxGenerator, PrimitiveJavaType node)
         {
             return SyntaxFactory.ParseTypeName(node.Identifier());

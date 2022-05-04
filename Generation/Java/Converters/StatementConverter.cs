@@ -35,6 +35,8 @@ namespace Generation.Java.Converters
                     JsonSerializer.Deserialize<TryStatement>(ref reader, options),
                 "com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt" =>
                     JsonSerializer.Deserialize<ExplicitConstructorInvocationStatement>(ref reader, options),
+                "com.github.javaparser.ast.stmt.WhileStmt" =>
+                    JsonSerializer.Deserialize<WhileStatement>(ref reader, options),
                 _ => throw new NotImplementedException()
             };
 

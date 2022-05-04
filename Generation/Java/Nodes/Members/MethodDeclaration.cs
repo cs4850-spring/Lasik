@@ -17,6 +17,6 @@ namespace Generation.Java.Nodes.Members
 
         [JsonPropertyName("thrownExceptions")] public List<JavaType> ThrownExceptions { get; set; }
 
-        [JsonPropertyName("typeParameters")] public List<object> TypeParameters { get; set; }
+        [JsonPropertyName("typeParameters")] public List<TypeParameter> TypeParameters { get; set; }
     }
 }

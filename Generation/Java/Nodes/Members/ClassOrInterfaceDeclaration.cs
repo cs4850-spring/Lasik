@@ -17,8 +17,10 @@ namespace Generation.Java.Nodes.Members
         [JsonConverter(typeof(BoolConverter))]
         public bool IsInterface { get; set; }
 
-        [JsonPropertyName("typeParameters")] public List<object> TypeParameters { get; set; }
-
+        [JsonPropertyName("typeParameters")] public List<TypeParameter> TypeParameters { get; set; }
+        
+        [JsonPropertyName("typeArguments")] public List<JavaType> TypeArguments { get; set; }
+        
         [JsonPropertyName("members")] public List<Member> Members { get; set; }
 
         [JsonPropertyName("modifiers")] public List<Modifier> Modifiers { get; set; }

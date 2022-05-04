@@ -2,6 +2,7 @@
 using System.Linq;
 using Generation.Java.Nodes;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editing;
 
 namespace Generation.generators
@@ -41,5 +42,41 @@ namespace Generation.generators
             }).FirstOrDefault(modifier => modifier != DeclarationModifiers.None, DeclarationModifiers.None);
         }
         
+        public static SyntaxNode AddTypeParamsAndConstraints(SyntaxGenerator syntaxGenerator, SyntaxNode syntax, List<TypeParameter> typeParameters)
+        {
+            var typeParameterStrings =
+                typeParameters?.Select(typeParameter =>
+                    BodyGenerators.TypeParameters(syntaxGenerator, typeParameter).ToString());
+
+            var typeConstraints =
+                typeParameters?.Select(typeParameters =>
+                    typeParameters?.TypeBounds?.Select(type => TypeGenerators.Type(syntaxGenerator, type)));
+            syntax = syntaxGenerator.WithTypeParameters(syntax, typeParameterStrings);
+
+            for (var i = 0; i < typeConstraints.Count(); i++)
+            {
+                var constaints = typeConstraints.ElementAt(i);
+                syntax = syntaxGenerator.WithTypeConstraint(syntax, typeParameterStrings.ElementAt(i),
+                    SpecialTypeConstraintKind.None, constaints);
+            }
+
+            return syntax;
+        }
+
+        public static string Unbox(string identifier)
+        {
+            return identifier switch
+            {
+                "Boolean" => "bool",
+                "Byte" => "byte",
+                "Character" => "char",
+                "Float" => "float",
+                "Integer" => "int",
+                "Long" => "long",
+                "Short" => "short",
+                "Double" => "double",
+                _ => identifier
+            };
+        }
     }
 }

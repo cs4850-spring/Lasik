@@ -24,6 +24,7 @@ namespace Generation.generators
                 ThrowStatement throwStatement => Throw(syntaxGenerator, throwStatement),
                 TryStatement tryStatement => Try(syntaxGenerator, tryStatement),
                 ExplicitConstructorInvocationStatement explicitConstructorInvocationStatement => SyntaxFactory.EmptyStatement(),
+                WhileStatement whileStatement => While(syntaxGenerator, whileStatement),
                 _ => throw new ArgumentOutOfRangeException(nameof(node), node, null)
             };        
         }
@@ -121,6 +122,22 @@ namespace Generation.generators
             });
             
             return syntaxGenerator.TryCatchStatement(tryBlock?.Statements, catchClauses, finallyBlock?.Statements);
+        }
+
+        public static SyntaxNode While(SyntaxGenerator syntaxGenerator, WhileStatement node)
+        {
+            var condition = ExpressionGenerators.Expression(syntaxGenerator, node.Conditional);
+            var body = Statement(syntaxGenerator, node.Body);
+
+            var statements = new SyntaxList<SyntaxNode>();
+            statements = body switch
+            {
+                BlockSyntax block => block.Statements,
+                ExpressionStatementSyntax expressionStatement => statements.Add(expressionStatement),
+                _ => statements
+            };
+
+            return syntaxGenerator.WhileStatement(condition, statements);
         }
     }
 }

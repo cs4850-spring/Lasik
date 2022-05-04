@@ -28,10 +28,19 @@ namespace Generation
             
             // Java AST -> C# (Rosyln) AST
             // CompilationUnit -> CompilationUnitSyntax
-            var cSharpAst = BodyGenerators.CompilationUnit(_syntaxGenerator, javaAst);
-            cSharpAst = CleanupAST(cSharpAst);
+            try
+            {
+                var cSharpAst = BodyGenerators.CompilationUnit(_syntaxGenerator, javaAst);
 
-            return cSharpAst.NormalizeWhitespace().ToFullString();
+                cSharpAst = CleanupAST(cSharpAst);
+
+                return cSharpAst.NormalizeWhitespace().ToFullString();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return e.ToString();
+            }
         }
 
         private SyntaxNode CleanupAST(SyntaxNode ast)
@@ -39,11 +48,11 @@ namespace Generation
             ast = new InvocationRewriter().Visit(ast);
             ast = new MethodTitleCaseRewriter().Visit(ast);
             ast = new FieldTitleCaseRewriter().Visit(ast);
+            ast = new TypeParamReturnNullRewriter().Visit(ast);
             var Mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
+
             var compilation = CSharpCompilation.Create("MyCompilation",
                 syntaxTrees: new[] { ast.SyntaxTree }, references: new[] { Mscorlib });
-//Note that we must specify the tree for which we want the model.
-//Each tree has its own semantic model
             var model = compilation.GetSemanticModel(ast.SyntaxTree);
             ast = new VirtualMethodRewriter(model).Visit(ast);
             
@@ -51,7 +60,12 @@ namespace Generation
                 syntaxTrees: new[] { ast.SyntaxTree }, references: new[] { Mscorlib });
             model = compilation.GetSemanticModel(ast.SyntaxTree);
             ast = new OverrideMethodRewriter(model).Visit(ast);
+            
 
+
+
+            
+            
             return Formatter.Format(ast, _workspace);
         }
     }

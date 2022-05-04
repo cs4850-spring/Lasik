@@ -197,6 +197,7 @@ namespace Generation.generators
                 "PREFIX_DECREMENT" => (SyntaxKind.PreDecrementExpression, SyntaxKind.MinusMinusToken),
                 "POSTFIX_INCREMENT" => (SyntaxKind.PostIncrementExpression, SyntaxKind.PlusPlusToken),
                 "POSTFIX_DECREMENT" => (SyntaxKind.PostDecrementExpression, SyntaxKind.MinusMinusToken),
+                "LOGICAL_COMPLEMENT" => (SyntaxKind.LogicalNotExpression, SyntaxKind.ExclamationToken),
                 _ => throw new ArgumentOutOfRangeException()
             };
 
@@ -210,6 +211,7 @@ namespace Generation.generators
                 "PREFIX_DECREMENT" => SyntaxFactory.PrefixUnaryExpression(syntaxKind, operandToken, expression),
                 "POSTFIX_INCREMENT" => SyntaxFactory.PostfixUnaryExpression(syntaxKind, expression, operandToken),
                 "POSTFIX_DECREMENT" => SyntaxFactory.PostfixUnaryExpression(syntaxKind, expression, operandToken),
+                "LOGICAL_COMPLEMENT" => SyntaxFactory.PrefixUnaryExpression(syntaxKind, operandToken, expression),
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -219,12 +221,17 @@ namespace Generation.generators
             // Modifers on these declarations dont exist in C#, so we ignore them.
 
             var variable = node?.Variables?.First();
-            var type = SyntaxFactory.ParseTypeName(variable.JavaType.Identifier());
+            var type = TypeGenerators.Type(syntaxGenerator, variable.JavaType);
             var identifier = SyntaxFactory.Identifier(variable.SimpleName.Identifier);
             var designation = SyntaxFactory.SingleVariableDesignation(identifier);
-            var declarationExpression = SyntaxFactory.DeclarationExpression(type, designation);
+            var declarationExpression = SyntaxFactory.DeclarationExpression(type as TypeSyntax, designation);
 
+            if (variable.Initializer == null)
+            {
+                return declarationExpression;
+            }
             var initializer = Expression(syntaxGenerator, variable.Initializer);
+
             return SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, declarationExpression, initializer as ExpressionSyntax);
         }
 
@@ -291,6 +298,7 @@ namespace Generation.generators
                 ThisExpressionSyntax thisExpression => "this",
                 BaseExpressionSyntax baseExpressionSyntax => "base",
                 IdentifierNameSyntax identifierName => $"{identifierName.Identifier.ValueText}",
+                InvocationExpressionSyntax invocationExpression => invocationExpression.ToString(),
                 null => "",
                 _ => throw new ArgumentOutOfRangeException(nameof(scope), scope, null)
             };
