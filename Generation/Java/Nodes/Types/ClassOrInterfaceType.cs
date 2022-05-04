@@ -23,6 +23,8 @@ namespace Generation.Java.Nodes.Types
 
         [JsonPropertyName("modifiers")] public List<Modifier> Modifiers { get; set; }
 
+        [JsonPropertyName("scope")] public JavaType Scope { get; set; }
+
         [JsonPropertyName("name")] public SimpleName SimpleName { get; set; }
 
         [JsonPropertyName("annotations")] public List<object> Annotations { get; set; }

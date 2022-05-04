@@ -23,6 +23,7 @@ namespace Generation.Java.Nodes.Members
         
         [JsonPropertyName("members")] public List<Member> Members { get; set; }
 
+        [JsonPropertyName("scope")] public JavaType Scope { get; set; }
         [JsonPropertyName("modifiers")] public List<Modifier> Modifiers { get; set; }
 
         [JsonPropertyName("name")] public SimpleName SimpleName { get; set; }

@@ -57,7 +57,10 @@ namespace Generation.generators
             var typeArguments =
                 node?.TypeArguments?.Select(typeArgument => TypeGenerators.Type(syntaxGenerator, typeArgument));
             node.SimpleName.Identifier = SyntaxNodeGeneratorHelpers.Unbox(node.SimpleName.Identifier);
-
+            if (node?.Scope != null && !node.SimpleName.Identifier.Contains(node.Scope.Identifier()))
+            {
+                node.SimpleName.Identifier = node.Scope.Identifier() + "." + node.SimpleName.Identifier;
+            }
             // Check if the node is a declaration. If So, we just want to return a TypeSyntax.
             // For instance: In `public Bar foo()` `Bar` is a not a declaration
             if (IsDeclaration(node))
@@ -101,6 +104,7 @@ namespace Generation.generators
         {
             return SyntaxFactory.ParseTypeName(node.Identifier());
         }
+        
     
         private static bool IsDeclaration(ClassOrInterfaceJavaType node)
         {

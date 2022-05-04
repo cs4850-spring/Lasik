@@ -25,6 +25,7 @@ namespace Generation.generators
                 TryStatement tryStatement => Try(syntaxGenerator, tryStatement),
                 ExplicitConstructorInvocationStatement explicitConstructorInvocationStatement => SyntaxFactory.EmptyStatement(),
                 WhileStatement whileStatement => While(syntaxGenerator, whileStatement),
+                BreakStatement breakStatement => Break(syntaxGenerator, breakStatement),
                 _ => throw new ArgumentOutOfRangeException(nameof(node), node, null)
             };        
         }
@@ -99,8 +100,13 @@ namespace Generation.generators
 
         public static SyntaxNode Return(SyntaxGenerator syntaxGenerator, ReturnStatement node)
         {
-            var expression = ExpressionGenerators.Expression(syntaxGenerator, node.Expression);
-            return syntaxGenerator.ReturnStatement(expression);
+            if (node.Expression != null)
+            {
+                var expression = ExpressionGenerators.Expression(syntaxGenerator, node.Expression);
+                return syntaxGenerator.ReturnStatement(expression);
+            }
+
+            return syntaxGenerator.ReturnStatement();
         }
     
         public static SyntaxNode Throw(SyntaxGenerator syntaxGenerator, ThrowStatement node)
@@ -138,6 +144,11 @@ namespace Generation.generators
             };
 
             return syntaxGenerator.WhileStatement(condition, statements);
+        }
+
+        public static SyntaxNode Break(SyntaxGenerator syntaxGenerator, BreakStatement node)
+        {
+            return SyntaxFactory.BreakStatement();
         }
     }
 }

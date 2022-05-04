@@ -298,7 +298,9 @@ namespace Generation.generators
                 ThisExpressionSyntax thisExpression => "this",
                 BaseExpressionSyntax baseExpressionSyntax => "base",
                 IdentifierNameSyntax identifierName => $"{identifierName.Identifier.ValueText}",
-                InvocationExpressionSyntax invocationExpression => invocationExpression.ToString(),
+                InvocationExpressionSyntax invocationExpression => invocationExpression.ToFullString(),
+                ObjectCreationExpressionSyntax objectCreationExpression => $"new {objectCreationExpression.Type.ToString()}{objectCreationExpression.ArgumentList}",
+                ElementAccessExpressionSyntax elementAccessExpression => elementAccessExpression.ToFullString(),
                 null => "",
                 _ => throw new ArgumentOutOfRangeException(nameof(scope), scope, null)
             };

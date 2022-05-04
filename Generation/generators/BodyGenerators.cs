@@ -21,7 +21,7 @@ namespace Generation.generators
             var imports = node.Imports.Select(import => Import(syntaxGenerator, import));
         
             var types = node.Types
-                .Select(type => TypeGenerators.ClassOrInterface(syntaxGenerator, type));
+                .Select(type => TypeGenerators.Type(syntaxGenerator, type));
 
             var declarations = imports.Concat(types);
             return syntaxGenerator.CompilationUnit(declarations);
@@ -41,6 +41,7 @@ namespace Generation.generators
                 MethodDeclaration methodDeclaration => MethodDeclaration(syntaxGenerator, methodDeclaration),
                 ClassOrInterfaceDeclaration classOrInterfaceDeclaration => ClassOrInterface(syntaxGenerator, classOrInterfaceDeclaration),
                 ConstructorDeclaration constructorDeclaration => ConstructorDeclaration(syntaxGenerator, constructorDeclaration),
+                EnumDeclaration enumDeclaration => Enum(syntaxGenerator, enumDeclaration),
                 _ => throw new System.NotImplementedException()
             };
         }
@@ -59,6 +60,10 @@ namespace Generation.generators
             var typeArguments =
                 node?.TypeArguments?.Select(typeArgument => TypeGenerators.Type(syntaxGenerator, typeArgument));
             node.SimpleName.Identifier = SyntaxNodeGeneratorHelpers.Unbox(node.SimpleName.Identifier);
+            if (node?.Scope != null)
+            {
+                node.SimpleName.Identifier = node.Scope.Identifier() + "." + node.SimpleName.Identifier;
+            }
             // Check if the node is a declaration. If So, we just want to return a TypeSyntax.
             // For instance: In `public Bar foo()` `Bar` is a not a declaration
             if (IsDeclaration(node))
@@ -203,6 +208,17 @@ namespace Generation.generators
             
             return SyntaxFactory.VariableDeclaration(type, SyntaxFactory.SeparatedList(variableDeclarators!));
         }
+
+        public static SyntaxNode Enum(SyntaxGenerator syntaxGenerator, EnumDeclaration node)
+        {
+            var members = node?.Entries?.Select(entry => syntaxGenerator.EnumMember(entry.Name.Identifier));
+
+            var accessbilityModifiers = SyntaxNodeGeneratorHelpers.AccessibilityFromModifiers(node.Modifiers);
+            var declarationModifiers = SyntaxNodeGeneratorHelpers.DeclarationModifiersFromModifier(node.Modifiers);
+
+            return syntaxGenerator.EnumDeclaration(node.Name.Identifier, accessbilityModifiers, declarationModifiers, members);
+        }
+
 
         private static FieldDeclarationSyntax AddAccessibilityModifier(FieldDeclarationSyntax fieldDeclarationSyntax, Accessibility accessibility)
         {
