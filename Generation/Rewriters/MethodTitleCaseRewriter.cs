@@ -35,6 +35,18 @@ namespace Generation.Rewriters
             var identifier = identifierSyntax.Identifier.ToString();
             var dotIndicies = IndexOfAll(identifier,".");
 
+            if (!dotIndicies.Any())
+            {
+                var index = 0;
+                var upper = Char.ToUpper(identifier[index]);
+
+                identifier = identifier.Remove(index, 1);
+                identifier = identifier.Insert(index, upper.ToString());
+                var newIdentifier = identifierSyntax.Update(SyntaxFactory.Identifier(identifier));
+                node = node.WithExpression(newIdentifier);
+                return base.VisitInvocationExpression(node);
+            }
+
             foreach (var dotIndex in dotIndicies)
             {
                 var index = dotIndex + 1;
